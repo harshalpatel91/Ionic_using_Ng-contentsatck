@@ -1,0 +1,14 @@
+<ion-view view-title="USER INPUT">
+  <ion-content>
+    <h1>USER INPUT</h1>
+    <cs-entry content-type="angularjs2_tutorial" as="userInput" where="title,USER INPUT" set-cache-policy="2">
+          <cs-loading ng-if="isLoading"></cs-loading>
+          <div class="card">
+            <div class="item item-text-wrap" data-ng-bind-html="userInput[0].multi_line"></div>
+          </div>
+          <div class="card">
+            <div class="item item-text-wrap" data-ng-bind-html="userInput[0].rich_text_editor"></div>
+          </div>
+    </cs-entry>
+  </ion-content>
+</ion-view>

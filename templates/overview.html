@@ -1,0 +1,14 @@
+<ion-view view-title="OVERVIEW">
+  <ion-content>
+    <h1>OVERVIEW</h1>
+    <cs-entry content-type="angularjs2_tutorial" as="overView" where="title,OVERVIEW" set-cache-policy="2">
+          <cs-loading ng-if="isLoading"></cs-loading>
+          <div class="card">
+            <div class="item item-text-wrap" data-ng-bind-html="overView[0].multi_line"></div>
+          </div>
+          <div class="card">
+            <div class="item item-text-wrap" data-ng-bind-html="overView[0].rich_text_editor"></div>
+          </div>
+    </cs-entry>
+  </ion-content>
+</ion-view>
