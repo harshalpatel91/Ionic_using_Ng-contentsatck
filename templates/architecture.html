@@ -1,14 +1,13 @@
 <ion-view view-title="ARCHITECTURE">
   <ion-content>
     <h1>architecture</h1>
-    <cs-entry content-type="angularjs2_tutorial" as="architecture" where="title,ARCHITECTURE" set-cache-policy="2">
-          <cs-loading ng-if="isLoading"></cs-loading>
+    <contentstack-entry content-type="angularjs2_tutorial" as="architecture" where="title,ARCHITECTURE" set-cache-policy="NETWORK_ELSE_CACHE">
           <div class="card">
             <div class="item item-text-wrap" data-ng-bind-html="architecture[0].multi_line"></div>
           </div>
           <div class="card">
             <div class="item item-text-wrap" data-ng-bind-html="architecture[0].rich_text_editor"></div>
           </div>
-    </cs-entry>
+    </contentstack-entry>
   </ion-content>
 </ion-view>
