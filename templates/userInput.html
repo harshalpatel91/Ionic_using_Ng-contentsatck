@@ -2,7 +2,7 @@
   <ion-content>
     <h1>USER INPUT</h1>
     <contentstack-entry content-type="angularjs2_tutorial" as="userInput" where="title,USER INPUT" set-cache-policy="NETWORK_ELSE_CACHE">
-          <div class="loader ng-cloak" data-ng-if="$isLoading">Loading...</div>
+          <div class="loader ng-cloak" data-ng-if="$isLoading && !userInput">Loading...</div>
           <div class="card" data-ng-if="!$isLoading && userInput">
             <div class="item item-text-wrap" data-ng-bind-html="userInput[0].multi_line"></div>
           </div>
