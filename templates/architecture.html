@@ -2,11 +2,11 @@
   <ion-content>
     <h1>architecture</h1>
     <contentstack-entry content-type="angularjs2_tutorial" as="architecture" where="title,ARCHITECTURE" set-cache-policy="NETWORK_ELSE_CACHE">
-          <div class="loader ng-cloak" data-ng-if="$isLoading && architecture">Loading...</div>
-          <div class="card" data-ng-if="!$isLoading">
+          <div class="loader ng-cloak" data-ng-if="$isLoading">Loading...</div>
+          <div class="card" data-ng-if="!$isLoading && architecture">
             <div class="item item-text-wrap" data-ng-bind-html="architecture[0].multi_line"></div>
           </div>
-          <div class="card" data-ng-if="!$isLoading">
+          <div class="card" data-ng-if="!$isLoading && architecture">
             <div class="item item-text-wrap" data-ng-bind-html="architecture[0].rich_text_editor"></div>
           </div>
     </contentstack-entry>

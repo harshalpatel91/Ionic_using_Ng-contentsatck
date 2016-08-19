@@ -2,11 +2,11 @@
   <ion-content>
     <h1>DISPLAYING DATA Angular 2 for TypeScript</h1>
     <contentstack-entry content-type="angularjs2_tutorial" as="displayData" where="title,DISPLAYING DATA Angular 2 for TypeScript" set-cache-policy="NETWORK_ELSE_CACHE">
-          <div class="loader ng-cloak" data-ng-if="$isLoading && displayData">Loading...</div>
-          <div class="card" data-ng-if="!$isLoading">
+          <div class="loader ng-cloak" data-ng-if="$isLoading">Loading...</div>
+          <div class="card" data-ng-if="!$isLoading && displayData">
             <div class="item item-text-wrap" data-ng-bind-html="displayData[0].multi_line"></div>
           </div>
-          <div class="card" data-ng-if="!$isLoading">
+          <div class="card" data-ng-if="!$isLoading && displayData">
             <div class="item item-text-wrap" data-ng-bind-html="displayData[0].rich_text_editor"></div>
           </div>
     </contentstack-entry>
