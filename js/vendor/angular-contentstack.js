@@ -105,9 +105,8 @@
                     ContentType = Stack.ContentType(attrs.contentType),
                     entry = ContentType.Query(),
                     as;
-                scope.isLoading = true;
-                scope.noMoreData = false;
-                scope.isLoadingLoadmore = false;
+                scope.$isLoading = true;
+                scope.$pagination = {};
                 var getQuery = function(attr){
                     var query = {
                       'setCachePolicy': setCachePolicy,
@@ -298,23 +297,19 @@
                       getQuery(queyAttr);
                     }
                 }
+                  attrs.includeCount = true;
+                  entry.includeCount();
               if (scope.all || attrs.uid) {
                   as = attrs.as || '$contentstackEntries';
                   if (attrs.uid) {
                       entry
                       .toJSON()
                       .fetch()
-                      .spread(function success(entries, schema, count) {
-                           scope.isLoading = false;
-                           console.log("entries",entries);
+                      .spread(function success(entries, schema) {
+                           scope.$isLoading = false;
                            scope[as] = entries || {};
-
                            if (attrs.includeSchema) {
                                scope['schema'] = schema;
-                           }
-                           if(attrs.includeCount){
-                             scope.count = count;
-                             console.log("scope.count",scope.count);
                            }
                            scope.$apply();
                        }, function error(err) {
@@ -325,53 +320,47 @@
                       .toJSON()
                       .find()
                       .spread(function success(entries, schema, count) {
-                          console.log("entry", entries);
-                           scope.isLoading = false;
+                           scope.$isLoading = false;
                            scope[as] = entries || {};
-                           var scopeAs = "scope."+as;
-                           console.log(scopeAs,entries);
                            if(attrs.includeCount){
-                             scope.count = count;
-                             console.log("scope.count",scope.count);
+                             scope.count = attrs.includeSchema ? count :schema;
                            }
                            if (attrs.includeSchema) {
                                scope['schema'] = schema;
-                               console.log("scope.schema", scope.schema);
                            }
+                           updatePaginationValues();
                            scope.$apply();
                        }, function error(err) {
                           console.error("error",err);
                        });
                   }
               } else {
-                  as = attrs.as || '$contentstackEntries';
-                  entry
-                  .toJSON()
-                  .find()
-                  .spread(function success(entries, schema, count) {
-                       scope.isLoading = false;
-                       scope[as] = entries || {};
-                       var scopeAs = "scope."+as;
-                       console.log(scopeAs,entries);
-                       if(attrs.includeCount){
-                         scope.count = count;
-                         console.log("scope.count",scope.count);
-                       }
-                       if (attrs.includeSchema) {
-                           scope.schema = schema;
-                           console.log("scope.schema", scope.schema);
-                       }
-                       scope.$apply();
-                   }, function error(err) {
-                      console.error("error",err);
-                   });
+                      as = attrs.as || '$contentstackEntries';
+                      entry
+                      .toJSON()
+                      .find()
+                      .spread(function success(entries, schema, count) {
+                           scope.$isLoading = false;
+                           scope[as] = entries || {};
+                           var scopeAs = "scope."+as;
+                           if(attrs.includeCount){
+                             scope.count = attrs.includeSchema ? count :schema;
+                           }
+                           if (attrs.includeSchema){
+                               scope.schema = schema;
+                           }
+                           updatePaginationValues();
+                           scope.$apply();
+                       }, function error(err) {
+                          console.error("error",err);
+                       });
               }
-              if(attrs.loadMore){
                 scope.loadMoreNumber = 0;
-                scope.noMoreData = false;
-                scope.loadMoreEntries = function(){
-                  console.log("test gulp");
-                  scope.isLoadingLoadmore = true;
+                scope.$pagination.loadMore = function(){
+                  if(scope.$pagination.currentPage === scope.$pagination.totalPages){
+                    return;
+                  }
+                  scope.$isLoading = true;
                   scope.loadMoreNumber++;
                   var skipEntries = scope.loadMoreNumber*Number(attrs.limit);
                   entry.skip(skipEntries);
@@ -379,16 +368,16 @@
                   .toJSON()
                   .find()
                   .spread(function success(entries, schema, count) {
-                       scope.isLoadingLoadmore = false;
-                       if(!entries.length){
-                         scope.noMoreData = true;
+                       scope.$isLoading = false;
+                       if(entries.length){
+                         scope.$pagination.currentPage++;
                        }
                        var concatData = scope[as].concat(entries);
                        scope[as] = concatData || [];
                        if(attrs.includeCount){
-                         scope.count = count;
+                         scope.$pagination.totalCount = attrs.includeSchema ? count :schema;
                        }
-                       if (attrs.includeSchema && entry[1]) {
+                       if (attrs.includeSchema) {
                            scope.schema = schema;
                        }
                        scope.$apply();
@@ -396,7 +385,53 @@
                       console.error("error",err);
                    });
                 }
-              }
+              var updatePaginationValues = function(){
+                scope.$pagination.totalCount = scope.count;
+                scope.$pagination.totalPages =  Math.ceil(scope.$pagination.totalCount/attrs.limit);
+                scope.$pagination.itemsPerPage = attrs.limit;
+              };
+                scope.$pagination.currentPage = 1;
+                var newEntries = function(skipEntries){
+                    entry.skip(skipEntries);
+                    entry
+                    .toJSON()
+                    .find()
+                    .spread(function success(entries, schema, count) {
+                         scope.$isLoading = false;
+                         if(entries.length){
+                            scope.$pagination.currentPage++;
+                         }
+                         scope[as] = entries;
+                         if(attrs.includeCount){
+                           scope.$pagination.totalCount = attrs.includeSchema ? count :schema;
+                         }
+                         if (attrs.includeSchema) {
+                             scope.schema = schema;
+                         }
+                         scope.$apply();
+                     }, function error(err) {
+                        console.error("error",err);
+                     });
+                };
+                var skipEntries = scope.$pagination.currentPage*Number(attrs.limit);
+                scope.$pagination.next = function(){
+                  if(scope.$pagination.currentPage === scope.$pagination.totalPages){
+                    return;
+                  }
+                  scope.$isLoading = true;
+                  var skipEntries = scope.$pagination.currentPage*Number(attrs.limit);
+                  newEntries(skipEntries);
+                };
+                scope.$pagination.previous = function(){
+                  if(scope.$pagination.currentPage <= 1){
+                    return;
+                  }
+                  scope.$isLoading = true;
+                  scope.$pagination.isLoading = true;
+                  scope.$pagination.currentPage--;
+                  var skipEntries = (scope.$pagination.currentPage-1)*Number(attrs.limit);
+                  newEntries(skipEntries);
+                };
             }
 
         }])

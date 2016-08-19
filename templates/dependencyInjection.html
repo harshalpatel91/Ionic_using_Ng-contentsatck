@@ -2,10 +2,11 @@
   <ion-content>
     <h1>DEPENDENCY INJECTION</h1>
     <contentstack-entry content-type="angularjs2_tutorial" as="dependencyInjection" where="title,DEPENDENCY INJECTION" set-cache-policy="NETWORK_ELSE_CACHE">
-          <div class="card">
+          <div class="loader ng-cloak" data-ng-if="!dependencyInjection">Loading...</div>
+          <div class="card" data-ng-if="dependencyInjection">
             <div class="item item-text-wrap" data-ng-bind-html="dependencyInjection[0].multi_line"></div>
           </div>
-          <div class="card">
+          <div class="card" data-ng-if="dependencyInjection">
             <div class="item item-text-wrap" data-ng-bind-html="dependencyInjection[0].rich_text_editor"></div>
           </div>
     </contentstack-entry>
