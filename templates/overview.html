@@ -3,10 +3,10 @@
     <h1>OVERVIEW</h1>
     <contentstack-entry content-type="angularjs2_tutorial" as="overView" where="title,OVERVIEW" set-cache-policy="NETWORK_ELSE_CACHE">
           <div class="loader ng-cloak" data-ng-if="!overView">Loading...</div>
-          <div class="card" data-ng-if="overView">
+          <div class="card" data-ng-if="!$isLoading && overView">
             <div class="item item-text-wrap" data-ng-bind-html="overView[0].multi_line"></div>
           </div>
-          <div class="card" data-ng-if="overView">
+          <div class="card" data-ng-if="!$isLoading && overView">
             <div class="item item-text-wrap" data-ng-bind-html="overView[0].rich_text_editor"></div>
           </div>
     </contentstack-entry>
